@@ -1,0 +1,54 @@
+def interactSolidSphere(self, p, dt):
+        # Checks if the particle is comparing to itself
+        if self.id == p.id: 
+            pass
+        else:
+            # calculates the distance between the particles
+            l = dist(self.x, self.y, p.x, p.y)
+            
+            # if the distance is smaller than the sum of the radii
+            # proceed to calculate the interactions
+            if l < self.radius + p.radius:
+                
+                # get the normal vector from the surface. 
+                # The normal vector is the same as the direction vector
+                # between the two particles
+                dx = (self.x - p.x)/(l + 0.01)
+                dy = (self.y - p.y)/(l + 0.01)
+            
+                # calculate the direction and magnitude of particle 1s velocity
+                vl1 = dist(self.vx, self.vy, 0,0)
+                dvx1 = (self.vx)/(vl1 + 0.01)
+                dvy1 = (self.vy)/(vl1 + 0.01)
+                
+                # calculate the direction and magnitude of particle 2s velocity
+                vl2 = dist(p.vx, p.vy, 0,0)
+                dvx2 = (p.vx)/(vl2 + 0.01)
+                dvy2 = (p.vy)/(vl2 + 0.01)
+                
+                # Calculates the overlap between particle 1 and 2
+                dr = abs(self.radius + p.radius - l)
+                
+                # displaces the particles so that they don't overlap.
+                # this assumes the same mass for both particles.
+                self.x = self.x + dr*dx/2.0
+                self.y = self.y + dr*dy/2.0
+                p.x = p.x - dr*dx/2.0
+                p.y = p.y - dr*dy/2.0
+                
+                # calculates the projection of the velocity vector on
+                # the normal vector
+                a1 = dvx1*dx + dvy1*dy
+                a2 = dvx2*dx + dvy2*dy
+                
+                # calculates the force, based on the projections of the 
+                # velocity vector and normal vector
+                # This formula kan be obtained by setting the momentum before
+                # and the momentum after the collision to be the same and
+                # retrieving the new velocities.
+                # the new velocities are muliplied by the mass and divided by dt.
+                # this gives a Force, which is the magnitude of the force the particles
+                # feels. These are then multiplied by the normal vector.
+                F = (2.0*(a1 - a2)/(self.mass + p.mass))*self.mass*p.mass/dt
+                self.applyForce(-F*dx, -F*dy)
+                p.applyForce(F*dx, F*dy)
