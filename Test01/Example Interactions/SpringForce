@@ -1,0 +1,33 @@
+    # Hooke's Law: F = -k*x
+    # The further a spring is pulled from equilibrium, the larger the force towards equilibrium.
+    # takes in the arguments:
+        # p: the other particle
+        # spring: the length of the spring with no weight acting
+        # spring_MAX: the maximum length of the spring before it breaks
+        # the k-values of the spring
+    def interactSpring(self, p, spring, spring_MAX, k):
+        # Check to see if the particles are the same.
+        # The particle should not push against itself
+        # this is unessecary for this interaction
+        if self.id == p.id:
+            pass
+        else:
+            #calculates the distance between the particles
+            l = dist(self.x, self.y, p.x, p.y)
+            
+            # if the distance is smaller than the breaking-length of the spring: Do the force calculation
+            if l < spring_MAX:
+                
+                # Calculate the direction of the force, currently in pixels
+                # The 0.001 is there to avoid dividing by zero. 
+                # not scalable in this state
+                dx = (self.x - p.x)/(l + 0.001)
+                dy = (self.y - p.y)/(l + 0.001)
+                    
+                # The magnitude of the force:
+                # The difference from equilibirum times the k-value    
+                F = (spring - l)*k
+                    
+                # Apply a force on one of the particles, the other particle will feel a force 
+                # when it comes up as self.
+                self.applyForce(F*dx, F*dy)
